@@ -1,0 +1,220 @@
+{
+  "name": "AI Abandoned Cart Recovery",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        -112
+      ],
+      "id": "98371cd9-42ae-4def-82dd-6c7364338fca",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "18J29Ls3Bnf1KctrTdX3I7BRPge0ef_YebvX0ZfWlGrk",
+          "mode": "list",
+          "cachedResultName": "Abandoned Carts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18J29Ls3Bnf1KctrTdX3I7BRPge0ef_YebvX0ZfWlGrk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18J29Ls3Bnf1KctrTdX3I7BRPge0ef_YebvX0ZfWlGrk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        -48
+      ],
+      "id": "59516861-c6b3-4b95-96c9-a5e5cbe56c52",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3tVF2RQkxEagCkf7",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "63f9b0a4-bba9-4a0b-9138-78f3e0b928ef",
+              "leftValue": "={{$json.status}}",
+              "rightValue": "Abandoned",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        384,
+        -144
+      ],
+      "id": "3c1721d3-d44a-44df-b764-fc3817020fa4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a short abandoned-cart recovery email.\n\nUse ONLY these exact values:\nCustomer: {{ $json.Customer }}\nProduct: {{ $json.Product }}\nCart Value: ₱{{ $json[\"Cart Value\"] }}\n\nRules:\n- Never describe the product with adjectives such as popular, best-selling, great, amazing, new, stylish, or similar.\n- Never invent product features, benefits, discounts, promotions, shipping offers, links, or other information.\n- Mention the exact product name and exact cart value.\n- Address the customer by their first name.\n- Keep the email under 70 words.\n- Be friendly, professional, and not pushy.\n- Encourage the customer to return to their cart.\n- Do not repeat the cart value unnecessarily.\n- Do not use placeholders.\n- Output ONLY the subject and email.\n\nFormat:\n\nSubject: [short subject]\n\nHi [Customer],\n\n[email body]\n\nBest regards,\nCustomer Support",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        576,
+        -128
+      ],
+      "id": "e077192b-8efa-4ddb-9c8f-58f3b95f2ca0",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        576,
+        96
+      ],
+      "id": "92ed63df-b9b5-4163-8e0b-6a29f7fa719a",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IC6IM0vnBn4PHslR",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get row(s) in sheet').item.json.Email }}",
+        "subject": "Complete Your Purchase",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        944,
+        -80
+      ],
+      "id": "ee73e45c-a2ec-46f2-8345-a6c3d45586b6",
+      "name": "Send a message",
+      "webhookId": "969cbbb1-850a-44a7-b920-1a73ccca0860",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gavo09BwMWnqjmn3",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "cecab206-52f1-4c11-be6a-ac39331f1c2b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb689872d6e9c98b0be08d4b1136dbe6749ca4eb2357a75e18eafe901d094fff"
+  },
+  "nodeGroups": [],
+  "id": "UoMtfQfJkuE4fktz",
+  "tags": []
+}
