@@ -1,0 +1,23 @@
+# AI Abandoned Cart Recovery
+
+An AI-powered abandoned cart recovery automation built with n8n.
+
+## What It Does
+
+- Automatically checks abandoned cart data
+- Reads customer and cart information from Google Sheets
+- Identifies customers with abandoned carts
+- Uses AI to generate personalized recovery emails
+- Automatically sends recovery emails through Gmail
+
+## Tools Used
+
+- n8n
+- AI / LLM
+- Google Sheets
+- Gmail
+- Workflow Automation
+
+## Goal
+
+To help businesses recover potentially lost sales by automatically reaching out to customers who left items in their shopping cart, while reducing manual follow-up work.
