@@ -157,8 +157,8 @@
   },
   "versionId": "4cdb189c-5f22-48d9-b911-e603d9134c42",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "eb689872d6e9c98b0be08d4b1136dbe6749ca4eb2357a75e18eafe901d094fff"
+    "templateCredsSetupCompleted": true
+    
   },
   "nodeGroups": [],
   "id": "csaRH1C0bVPE6iQI",
