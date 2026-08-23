@@ -1,0 +1,269 @@
+{
+  "name": "AI Product Description Generator.",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -64
+      ],
+      "id": "3864ca8a-994c-4e0e-a56d-e9ac00d6bc66",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "843003d7-5b3d-4620-8696-9489cdeb0999",
+              "name": "product_name",
+              "value": "Wireless Bluetooth Headphones",
+              "type": "string"
+            },
+            {
+              "id": "75b9c0af-801b-488c-a210-b501d6196e94",
+              "name": "category",
+              "value": "Electronics",
+              "type": "string"
+            },
+            {
+              "id": "ba5e395c-c97d-40a4-ac17-7a7c8add13de",
+              "name": "features",
+              "value": "Active noise cancellation, Bluetooth 5.3, 30-hour battery life, USB-C charging",
+              "type": "string"
+            },
+            {
+              "id": "0ed9f5b5-d11f-4f90-94db-851f6df2be33",
+              "name": "target_audience",
+              "value": "Students, professionals, and commuters",
+              "type": "string"
+            },
+            {
+              "id": "64f6974a-88ab-41e6-84a1-62ac0e817bf7",
+              "name": "tone",
+              "value": "Professional, engaging, and persuasive",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "1b325eac-8429-42f9-93bc-9dbd08a413db",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a product description based on the product information provided.\n\nReturn ONLY valid JSON in this exact format:\n\n{\n  \"product_name\": \"string\",\n  \"short_description\": \"string\",\n  \"long_description\": \"string\",\n  \"key_features\": [\n    \"string\"\n  ]\n}\n\nDo not include markdown, ```json, or any explanation outside the JSON.",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        432,
+        16
+      ],
+      "id": "42c823d7-b8c5-431a-a381-ae953d4e9434",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        416,
+        224
+      ],
+      "id": "5cc8eda6-955a-49d8-9bc4-f1375e20ca28",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IC6IM0vnBn4PHslR",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json.text;\n\nconst product = JSON.parse(output);\n\nreturn [\n  {\n    json: product\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        -48
+      ],
+      "id": "a97abd44-a8fb-4d98-b1da-da2e3885d286",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1TxySgekHcmv0rANySfBQ2W0jD2uIfxTdKq3BP0GxRMg",
+          "mode": "list",
+          "cachedResultName": "AI Product Description Generator",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TxySgekHcmv0rANySfBQ2W0jD2uIfxTdKq3BP0GxRMg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TxySgekHcmv0rANySfBQ2W0jD2uIfxTdKq3BP0GxRMg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "product_name": "={{$json.product_name}}",
+            "short_description": "={{$json.short_description}}",
+            "long_description": "={{$json.long_description}}",
+            "key_features": "={{$json.key_features}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "product_name",
+              "displayName": "product_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "short_description",
+              "displayName": "short_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "long_description",
+              "displayName": "long_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "key_features",
+              "displayName": "key_features",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        32
+      ],
+      "id": "0709ba5d-1e3b-4b4c-bc10-5d3502eb696a",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3tVF2RQkxEagCkf7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8d2fd937-5779-4af7-ba8f-1a2a1bac9d0f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb689872d6e9c98b0be08d4b1136dbe6749ca4eb2357a75e18eafe901d094fff"
+  },
+  "nodeGroups": [],
+  "id": "7s4qgnhlrpPDJtcj",
+  "tags": []
+}
