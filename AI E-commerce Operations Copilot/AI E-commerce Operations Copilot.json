@@ -1,0 +1,341 @@
+{
+  "name": "AI E-commerce Operations Copilot",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "5bed2cb8-8306-482c-80f4-f47b2d3ec19c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d86e2dc-51c7-48f6-9775-122668519554",
+              "name": "total_orders",
+              "value": "450",
+              "type": "string"
+            },
+            {
+              "id": "78189ed6-9096-48a8-9713-939236b62c4b",
+              "name": "total_revenue",
+              "value": "28500",
+              "type": "string"
+            },
+            {
+              "id": "8c3095b1-2cc4-4ddb-ad3c-428e3ff70615",
+              "name": "pending_orders",
+              "value": "38",
+              "type": "string"
+            },
+            {
+              "id": "8c977fb3-d54d-4d39-b68a-67c8a5183dc1",
+              "name": "low_stock_products",
+              "value": "5",
+              "type": "string"
+            },
+            {
+              "id": "a62261ee-1036-4de7-ba7b-0564f13ef0c4",
+              "name": "customer_complaints",
+              "value": "12",
+              "type": "string"
+            },
+            {
+              "id": "248f16a3-13d6-4919-a43c-b00bed8579ee",
+              "name": "pending_returns",
+              "value": "18",
+              "type": "string"
+            },
+            {
+              "id": "7b4474ba-5b15-4001-a3c0-f15b14bd73fa",
+              "name": "average_order_value",
+              "value": "63.33",
+              "type": "string"
+            },
+            {
+              "id": "9b1e545f-32a2-455d-950d-e51033c6916c",
+              "name": "top_product",
+              "value": "Wireless Bluetooth Headphones",
+              "type": "string"
+            },
+            {
+              "id": "b1013355-55a6-43fc-9a83-1ba1db53b073",
+              "name": "top_product_sales",
+              "value": "120",
+              "type": "string"
+            },
+            {
+              "id": "58c5292a-665a-4090-acb9-5ca58b1b1d3f",
+              "name": "customer_satisfaction",
+              "value": "4.2",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        128,
+        -48
+      ],
+      "id": "a5f2e6c3-22aa-4498-af56-a61e206a8851",
+      "name": "E-commerce Operations Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const totalOrders = Number($json.total_orders);\nconst totalRevenue = Number($json.total_revenue);\nconst pendingOrders = Number($json.pending_orders);\nconst lowStockProducts = Number($json.low_stock_products);\nconst customerComplaints = Number($json.customer_complaints);\nconst pendingReturns = Number($json.pending_returns);\nconst averageOrderValue = Number($json.average_order_value);\nconst customerSatisfaction = Number($json.customer_satisfaction);\n\nconst pendingOrderRate =\n  (pendingOrders / totalOrders) * 100;\n\nconst complaintRate =\n  (customerComplaints / totalOrders) * 100;\n\nconst returnRate =\n  (pendingReturns / totalOrders) * 100;\n\nlet operationalStatus;\n\nif (\n  pendingOrderRate > 10 ||\n  lowStockProducts >= 5 ||\n  complaintRate > 3 ||\n  returnRate > 5 ||\n  customerSatisfaction < 4\n) {\n  operationalStatus = \"Needs Attention\";\n} else {\n  operationalStatus = \"Healthy\";\n}\n\nreturn [\n  {\n    json: {\n      ...$json,\n      pending_order_rate: Number(pendingOrderRate.toFixed(2)),\n      complaint_rate: Number(complaintRate.toFixed(2)),\n      return_rate: Number(returnRate.toFixed(2)),\n      operational_status: operationalStatus\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -32
+      ],
+      "id": "087ed6de-20d1-46b0-bc47-491001984345",
+      "name": "Operations Metrics Calculator"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the e-commerce operations data below.\n\nOrders: {{ $json.total_orders }}\nRevenue: {{ $json.total_revenue }}\nPending Orders: {{ $json.pending_orders }}\nPending Order Rate: {{ $json.pending_order_rate }}%\nLow Stock Products: {{ $json.low_stock_products }}\nCustomer Complaints: {{ $json.customer_complaints }}\nPending Returns: {{ $json.pending_returns }}\nReturn Rate: {{ $json.return_rate }}%\nCustomer Satisfaction: {{ $json.customer_satisfaction }}\nTop Product: {{ $json.top_product }}\n\nIdentify the main operational problem and recommend two actions.\n\nKeep all responses concise.",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        512,
+        16
+      ],
+      "id": "23a8cb9b-0edb-4f46-9641-745476bb12a1",
+      "name": "AI Operations Copilot"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        400,
+        272
+      ],
+      "id": "769e365a-aeca-435c-bf17-8293ca2bcf9c",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IC6IM0vnBn4PHslR",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"operational_summary\": \"Operations need attention.\",\n  \"urgent_issue\": \"Pending orders need attention.\",\n  \"inventory_observation\": \"Some products have low stock.\",\n  \"customer_service_observation\": \"Customer complaints should be monitored.\",\n  \"priority_action\": \"Process pending orders and replenish low stock.\",\n  \"second_action\": \"Improve customer service response.\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        624,
+        272
+      ],
+      "id": "1dc56825-6d2b-4c6c-afa5-631605197e1d",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Ht___X9I9hi-4ZbUzcYlyuCdJuXj9bx9AMucBJxwCIQ",
+          "mode": "list",
+          "cachedResultName": "AI E-commerce Operations Copilot",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ht___X9I9hi-4ZbUzcYlyuCdJuXj9bx9AMucBJxwCIQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ht___X9I9hi-4ZbUzcYlyuCdJuXj9bx9AMucBJxwCIQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "operational_summary": "={{ $json.output.operational_summary }}",
+            "urgent_issue": "={{ $json.output.urgent_issue }}",
+            "inventory_observation": "={{ $json.output.inventory_observation }}",
+            "customer_service_observation": "={{ $json.output.customer_service_observation }}",
+            "priority_action": "={{ $json.output.priority_action }}",
+            "second_action": "={{ $json.output.second_action }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "operational_summary",
+              "displayName": "operational_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "urgent_issue",
+              "displayName": "urgent_issue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "inventory_observation",
+              "displayName": "inventory_observation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customer_service_observation",
+              "displayName": "customer_service_observation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority_action",
+              "displayName": "priority_action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "second_action",
+              "displayName": "second_action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        864,
+        32
+      ],
+      "id": "c8e58c55-5c65-49d2-9bc0-af80a8117569",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3tVF2RQkxEagCkf7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "E-commerce Operations Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "E-commerce Operations Data": {
+      "main": [
+        [
+          {
+            "node": "Operations Metrics Calculator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Operations Metrics Calculator": {
+      "main": [
+        [
+          {
+            "node": "AI Operations Copilot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Operations Copilot",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Operations Copilot": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Operations Copilot",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3f93ffd9-f4ac-4da1-b34b-08de9ec5697d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb689872d6e9c98b0be08d4b1136dbe6749ca4eb2357a75e18eafe901d094fff"
+  },
+  "nodeGroups": [],
+  "id": "bahbQREZ05a4aPRw",
+  "tags": []
+}
