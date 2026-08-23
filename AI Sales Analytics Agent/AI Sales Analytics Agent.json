@@ -1,0 +1,324 @@
+{
+  "name": "AI Sales Analytics Agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -64
+      ],
+      "id": "144b73fe-15cb-41ac-862d-22ed50cd1997",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5f7f21af-f62d-4054-b2be-74cb4fb559b5",
+              "name": "product_1",
+              "value": "Wireless Bluetooth Headphones",
+              "type": "string"
+            },
+            {
+              "id": "6673aaa6-53ce-4edb-bf27-6820a8d93d35",
+              "name": "sales_1",
+              "value": "120",
+              "type": "string"
+            },
+            {
+              "id": "2ee9739d-1317-48e6-ae8a-7ab9ab98a649",
+              "name": "revenue_1",
+              "value": "7198.80",
+              "type": "string"
+            },
+            {
+              "id": "9a3d9cb1-9a4b-405f-b10b-4b126d5b7ede",
+              "name": "product_2",
+              "value": "Smart Water Bottle",
+              "type": "string"
+            },
+            {
+              "id": "1b0f0747-edde-49f9-93c8-f9ba1efc83b0",
+              "name": "sales_2",
+              "value": "85",
+              "type": "string"
+            },
+            {
+              "id": "8238a669-0c84-4c32-8ef0-020cd6acecbe",
+              "name": "revenue_2",
+              "value": "4249.15",
+              "type": "string"
+            },
+            {
+              "id": "61a2b07e-50a3-4b73-914a-1692fd1fbd3d",
+              "name": "product_3",
+              "value": "Smart Home Security Camera",
+              "type": "string"
+            },
+            {
+              "id": "999c0af4-535c-416b-8d05-79f48c42c10d",
+              "name": "sales_3",
+              "value": "65",
+              "type": "string"
+            },
+            {
+              "id": "aff6b0dd-bad6-4c2d-b4a6-1ca687486f5a",
+              "name": "revenue_3",
+              "value": "6493.50",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        208,
+        32
+      ],
+      "id": "d3ddcdf4-128b-4f74-a601-8019147da11d",
+      "name": "Sales Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const sales1 = Number($json.sales_1);\nconst revenue1 = Number($json.revenue_1);\n\nconst sales2 = Number($json.sales_2);\nconst revenue2 = Number($json.revenue_2);\n\nconst sales3 = Number($json.sales_3);\nconst revenue3 = Number($json.revenue_3);\n\nconst totalSales = sales1 + sales2 + sales3;\nconst totalRevenue = revenue1 + revenue2 + revenue3;\n\nconst averageOrderValue = totalRevenue / totalSales;\n\nconst highestRevenueProduct =\n  revenue1 >= revenue2 && revenue1 >= revenue3\n    ? $json.product_1\n    : revenue2 >= revenue3\n      ? $json.product_2\n      : $json.product_3;\n\nreturn [\n  {\n    json: {\n      ...$json,\n      total_sales: totalSales,\n      total_revenue: Number(totalRevenue.toFixed(2)),\n      average_order_value: Number(averageOrderValue.toFixed(2)),\n      highest_revenue_product: highestRevenueProduct\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -16
+      ],
+      "id": "e5b4e743-facb-4677-aec1-82daa7967b67",
+      "name": "Sales Metrics Calculator"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an e-commerce sales analytics expert.\n\nAnalyze these calculated sales metrics:\n\nProduct 1: {{ $json.product_1 }}\nSales 1: {{ $json.sales_1 }}\nRevenue 1: {{ $json.revenue_1 }}\n\nProduct 2: {{ $json.product_2 }}\nSales 2: {{ $json.sales_2 }}\nRevenue 2: {{ $json.revenue_2 }}\n\nProduct 3: {{ $json.product_3 }}\nSales 3: {{ $json.sales_3 }}\nRevenue 3: {{ $json.revenue_3 }}\n\nTotal Sales: {{ $json.total_sales }}\nTotal Revenue: {{ $json.total_revenue }}\nAverage Order Value: {{ $json.average_order_value }}\nHighest Revenue Product: {{ $json.highest_revenue_product }}\n\nProvide:\n1. A brief overall sales summary.\n2. The best-performing product based on revenue.\n3. The product with the lowest sales volume.\n4. One important business insight.\n5. One recommended business action.\n\nIMPORTANT:\nDo not recalculate the provided metrics.\nUse the calculated values exactly as provided.\n\nReturn ONLY a valid JSON object.\n\nUse exactly these five keys:\nsales_summary\nbest_performing_product\nlowest_sales_product\nkey_insight\nrecommended_action\n\nAll five values must be simple strings.\nDo not use quotation marks inside the string values.\nDo not use Markdown.\nDo not use code fences.\nDo not add any text before or after the JSON.\n\nExample:\n\n{\n  \"sales_summary\": \"Total sales were 270 units with total revenue of 17941.45.\",\n  \"best_performing_product\": \"Wireless Bluetooth Headphones\",\n  \"lowest_sales_product\": \"Smart Home Security Camera\",\n  \"key_insight\": \"Wireless Bluetooth Headphones generated the highest revenue.\",\n  \"recommended_action\": \"Consider bundling and cross-selling products to increase sales.\"\n}Make sure the JSON object ends with a closing curly brace: }",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        608,
+        48
+      ],
+      "id": "8f73838c-20e7-4883-b817-d52e47db8bfa",
+      "name": "AI Sales Analysis"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        592,
+        224
+      ],
+      "id": "2f397de7-3c5b-4c27-8ef8-3160f3326099",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IC6IM0vnBn4PHslR",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json.text;\n\nlet result;\n\ntry {\n  result = JSON.parse(output);\n} catch (error) {\n  const cleaned = output\n    .replace(/```json/g, \"\")\n    .replace(/```/g, \"\")\n    .trim();\n\n  result = JSON.parse(cleaned);\n}\n\nreturn [\n  {\n    json: result\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        -16
+      ],
+      "id": "2f2e2f9f-c0e8-4610-b550-428c65983b95",
+      "name": "Parse Sales Analysis"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1z8V5W52wlGn7upYtO-6xA5ms0qcnQeqZtXj-TJSUPdk",
+          "mode": "list",
+          "cachedResultName": "AI Sales Analytics Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z8V5W52wlGn7upYtO-6xA5ms0qcnQeqZtXj-TJSUPdk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z8V5W52wlGn7upYtO-6xA5ms0qcnQeqZtXj-TJSUPdk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sales_summary": "={{$json.sales_summary}}",
+            "best_performing_product": "={{$json.best_performing_product}}",
+            "lowest_sales_product": "={{$json.lowest_sales_product}}",
+            "key_insight": "={{$json.key_insight}}",
+            "recommended_action": "={{$json.recommended_action}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "sales_summary",
+              "displayName": "sales_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "best_performing_product",
+              "displayName": "best_performing_product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lowest_sales_product",
+              "displayName": "lowest_sales_product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "key_insight",
+              "displayName": "key_insight",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommended_action",
+              "displayName": "recommended_action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        80
+      ],
+      "id": "59670ed2-8c28-4825-9e44-1f640b8a5482",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3tVF2RQkxEagCkf7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Sales Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Data": {
+      "main": [
+        [
+          {
+            "node": "Sales Metrics Calculator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Metrics Calculator": {
+      "main": [
+        [
+          {
+            "node": "AI Sales Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Sales Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Sales Analysis": {
+      "main": [
+        [
+          {
+            "node": "Parse Sales Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Sales Analysis": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "022158b8-50af-4557-9ace-90bc924a754a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb689872d6e9c98b0be08d4b1136dbe6749ca4eb2357a75e18eafe901d094fff"
+  },
+  "nodeGroups": [],
+  "id": "l2Dpj7w7WRZrGhsg",
+  "tags": []
+}
