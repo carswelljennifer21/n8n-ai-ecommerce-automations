@@ -1,50 +1,153 @@
-AI Abandoned Cart Recovery
-What It Does
+🛒 AI Abandoned Cart Recovery
 
-An AI-powered automation that identifies abandoned carts and automatically sends personalized recovery emails to customers who did not complete their purchase.
+An AI-powered abandoned cart recovery automation built with n8n, Google Sheets, Ollama AI, and Gmail that identifies abandoned carts, generates personalized recovery emails, and automatically sends them to customers.
 
-Business Problem
+🎯 Project Overview
 
-Customers often add products to their carts but leave without completing their purchases. Manually following up with these customers takes time and can result in missed sales opportunities.
+eCommerce businesses often lose potential sales when customers add products to their cart but leave without completing their purchase.
 
-AI Solution
+This automation helps address that problem by automatically checking cart records, identifying abandoned carts, using AI to generate a personalized recovery email, and sending the message to the customer.
 
-The workflow checks customer cart data, identifies carts marked as abandoned, uses AI to create a personalized recovery email, and automatically sends the email to the customer.
+🚨 The Problem
 
-How It Works
+Abandoned carts can result in missed sales opportunities.
 
-Schedule Trigger → Google Sheets → Check Cart Status → AI Agent → Generate Recovery Email → Gmail
+Without an automated recovery process:
 
-Example
+Businesses have to manually identify abandoned carts
+Customer follow-ups can be missed
+Teams spend time writing repetitive emails
+Customers may forget about products left in their carts
+Potential sales opportunities can be lost
+💡 The Solution
 
-Customer:
-John
+This n8n workflow automates the abandoned cart recovery process.
 
-Product:
-Bluetooth Speaker
+The automation:
 
-Cart Value:
-₱1,999
+Runs automatically on a scheduled trigger.
+Retrieves cart records from Google Sheets.
+Checks whether the cart status is Abandoned.
+Passes the customer and product information to an AI Agent.
+Generates a short and personalized recovery email.
+Sends the email to the customer through Gmail.
+🔧 Workflow
+Schedule Trigger
+       ↓
+Google Sheets
+       ↓
+Check Cart Status
+       ↓
+IF — Abandoned?
+       ↓ TRUE
+AI Agent
+       ↓
+Generate Recovery Email
+       ↓
+Gmail
+       ↓
+Customer
+🛠️ Technologies Used
+n8n — Workflow automation platform
+Google Sheets — Stores abandoned cart information
+Ollama AI — Generates personalized recovery email content
+Gmail — Sends recovery emails to customers
+📋 Data Used
 
-AI-Generated Email:
-"Hi John,
+The workflow uses customer and cart information such as:
 
-We noticed you left the Bluetooth Speaker in your cart for ₱1,999. If you're still interested, you can return to your cart to complete your purchase.
+Customer name
+Customer email
+Product name
+Cart value
+Cart status
+
+The AI is instructed to use the provided information without inventing product features, discounts, promotions, or other details.
+
+✉️ Example Recovery Email
+Subject: Complete Your Purchase
+
+Hi John,
+
+We noticed you left the Bluetooth Speaker in your cart for ₱1,999. If you're still interested, please return to your cart to complete your purchase.
 
 Best regards,
-Customer Support"
+Customer Support
+📊 Example Scenario
 
-Business Value
-Recovers potential lost sales
-Automates customer follow-ups
-Saves time on manual outreach
-Creates personalized customer messages
-Helps businesses improve conversion opportunities
-Tools Used
-n8n
-Google Sheets
-AI/LLM
-Gmail
-Portfolio Description
+A customer adds a product to their cart but does not complete the purchase.
 
-AI Abandoned Cart Recovery is an AI-powered n8n automation that identifies abandoned shopping carts, generates personalized recovery emails using AI, and automatically sends follow-up messages to customers. The workflow helps eCommerce businesses reduce manual follow-ups and recover potential lost sales.
+The cart record contains:
+
+Customer: John
+Product: Bluetooth Speaker
+Cart Value: ₱1,999
+Status: Abandoned
+
+The workflow processes the record:
+
+Abandoned Cart
+       ↓
+AI Generates Personalized Email
+       ↓
+Gmail Sends Recovery Email
+       ↓
+Customer Receives Follow-Up
+📈 Benefits
+
+This automation can help businesses:
+
+Recover potential lost sales
+Automate abandoned cart follow-ups
+Reduce repetitive administrative work
+Create personalized customer communication
+Improve follow-up consistency
+Save customer support time
+Scale customer outreach
+🔐 Security
+
+Never upload credentials or sensitive information to GitHub.
+
+Do not include:
+
+API keys
+OAuth tokens
+Passwords
+n8n credentials
+Private customer information
+Private Google Sheets URLs or data
+Other sensitive authentication information
+
+Before uploading an n8n workflow JSON file, remove or replace credentials and sensitive information.
+
+🚀 Possible Improvements
+
+Future versions could include:
+
+Multiple recovery email stages
+Customer purchase tracking
+Automatic follow-up scheduling
+Cart recovery analytics
+CRM integration
+Shopify integration
+Klaviyo integration
+Customer segmentation
+Recovery conversion tracking
+Human approval before sending emails
+📌 Project Status
+
+Completed — Demo / Portfolio Version
+
+This workflow demonstrates an AI-powered abandoned cart recovery process built with n8n.
+
+The project is designed as a portfolio demonstration of AI automation, eCommerce operations, personalized email automation, and workflow-based customer engagement.
+
+👤 Author
+
+Jennifer
+
+AI Automation & n8n Workflow Developer
+
+Skills Demonstrated
+
+n8n AI Automation Workflow Automation Ollama Google Sheets Gmail eCommerce Automation Email Automation Customer Engagement Process Automation
