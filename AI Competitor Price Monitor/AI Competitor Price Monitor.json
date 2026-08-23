@@ -1,0 +1,321 @@
+{
+  "name": "AI Competitor Price Monitor",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        -64
+      ],
+      "id": "b06814ca-6ff1-4d81-bd05-88dbd0286a0a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f3d7969-5322-49cb-911d-7f3eecbd5032",
+              "name": "product_name",
+              "value": "Wireless Bluetooth Headphones",
+              "type": "string"
+            },
+            {
+              "id": "03e769df-8b23-45a3-9088-8dacebb653cc",
+              "name": "our_price",
+              "value": "59.99",
+              "type": "string"
+            },
+            {
+              "id": "af78cd60-b0d5-41b6-ad26-75c5626940b5",
+              "name": "competitor_1_price",
+              "value": "49.99",
+              "type": "string"
+            },
+            {
+              "id": "e1a0a94f-097d-43bc-aeb4-27e8bd528e59",
+              "name": "competitor_2_price",
+              "value": "64.99",
+              "type": "string"
+            },
+            {
+              "id": "4ff2083c-c8e8-4a53-ab33-ec413a97a0e1",
+              "name": "competitor_3_price",
+              "value": "54.99",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -480,
+        -112
+      ],
+      "id": "388d1623-c485-4875-932f-0ed3a8548b9c",
+      "name": "Product Pricing Data"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an e-commerce pricing analyst.\n\nAnalyze this product pricing data:\n\nProduct: {{ $json.product_name }}\nOur Price: {{ $json.our_price }}\nAverage Competitor Price: {{ $json.average_competitor_price }}\nPercentage Difference: {{ $json.percentage_difference }}%\n\nBased on these calculated values:\n\n- If our price is higher than the average competitor price, set price_position to \"higher\".\n- If our price is lower than the average competitor price, set price_position to \"lower\".\n- If our price is approximately equal to the average competitor price, set price_position to \"about the same\".\n\nDetermine:\n1. The price position.\n2. Whether the current price is competitive.\n3. A pricing recommendation.\n4. A recommended action.\n\nDo NOT recalculate the prices or percentage.\nUse the calculated values provided above.\n\nReturn ONLY valid JSON:\n\n{\n  \"product_name\": \"string\",\n  \"our_price\": 0,\n  \"average_competitor_price\": 0,\n  \"price_position\": \"string\",\n  \"percentage_difference\": 0,\n  \"pricing_recommendation\": \"string\",\n  \"recommended_action\": \"string\"\n}\n\nDo not include Markdown or any explanation outside the JSON.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -112,
+        -96
+      ],
+      "id": "6a5830df-c69a-41f1-a1e7-9764988c682a",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        96
+      ],
+      "id": "8e64e3c8-9c67-4f4a-b79c-285ad9d0a61b",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IC6IM0vnBn4PHslR",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ourPrice = Number($json.our_price);\nconst competitor1 = Number($json.competitor_1_price);\nconst competitor2 = Number($json.competitor_2_price);\nconst competitor3 = Number($json.competitor_3_price);\n\nconst averageCompetitorPrice =\n  (competitor1 + competitor2 + competitor3) / 3;\n\nconst percentageDifference =\n  ((ourPrice - averageCompetitorPrice) / averageCompetitorPrice) * 100;\n\nreturn [\n  {\n    json: {\n      ...$json,\n      average_competitor_price: Number(averageCompetitorPrice.toFixed(2)),\n      percentage_difference: Number(percentageDifference.toFixed(2))\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -304,
+        -16
+      ],
+      "id": "ac19ca22-0c6e-4f92-a811-cb5679697742",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json.text;\n\nconst result = JSON.parse(output);\n\nreturn [\n  {\n    json: result\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -112
+      ],
+      "id": "b684baf7-1777-431b-b295-b6a9d4269377",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "19Rf7m-_0vWrkXe6k_vB1mQQR-qK0-Ffvf1UE9XkXS34",
+          "mode": "list",
+          "cachedResultName": "AI Competitor Price Monitor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19Rf7m-_0vWrkXe6k_vB1mQQR-qK0-Ffvf1UE9XkXS34/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19Rf7m-_0vWrkXe6k_vB1mQQR-qK0-Ffvf1UE9XkXS34/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "product_name": "={{$json.product_name}}",
+            "our_price": "={{$json.our_price}}",
+            "average_competitor_price": "={{$json.average_competitor_price}}",
+            "price_position": "={{$json.price_position}}",
+            "percentage_difference": "={{$json.percentage_difference}}",
+            "pricing_recommendation": "={{$json.pricing_recommendation}}",
+            "recommended_action": "={{$json.recommended_action}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "product_name",
+              "displayName": "product_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "our_price",
+              "displayName": "our_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "average_competitor_price",
+              "displayName": "average_competitor_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "price_position",
+              "displayName": "price_position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "percentage_difference",
+              "displayName": "percentage_difference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pricing_recommendation",
+              "displayName": "pricing_recommendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommended_action",
+              "displayName": "recommended_action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        -48
+      ],
+      "id": "7bdf0279-994d-490a-adb8-86e05657bd20",
+      "name": "Append row in sheet",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3tVF2RQkxEagCkf7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Product Pricing Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Pricing Data": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "dbb795dc-2cb2-480a-ae66-56d45aac728d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb689872d6e9c98b0be08d4b1136dbe6749ca4eb2357a75e18eafe901d094fff"
+  },
+  "nodeGroups": [],
+  "id": "wKf8EcXdfNUwgOHb",
+  "tags": []
+}
