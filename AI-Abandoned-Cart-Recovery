@@ -1,23 +1,50 @@
-# AI Abandoned Cart Recovery
+AI Abandoned Cart Recovery
+What It Does
 
-An AI-powered abandoned cart recovery automation built with n8n.
+An AI-powered automation that identifies abandoned carts and automatically sends personalized recovery emails to customers who did not complete their purchase.
 
-## What It Does
+Business Problem
 
-- Automatically checks abandoned cart data
-- Reads customer and cart information from Google Sheets
-- Identifies customers with abandoned carts
-- Uses AI to generate personalized recovery emails
-- Automatically sends recovery emails through Gmail
+Customers often add products to their carts but leave without completing their purchases. Manually following up with these customers takes time and can result in missed sales opportunities.
 
-## Tools Used
+AI Solution
 
-- n8n
-- AI / LLM
-- Google Sheets
-- Gmail
-- Workflow Automation
+The workflow checks customer cart data, identifies carts marked as abandoned, uses AI to create a personalized recovery email, and automatically sends the email to the customer.
 
-## Goal
+How It Works
 
-To help businesses recover potentially lost sales by automatically reaching out to customers who left items in their shopping cart, while reducing manual follow-up work.
+Schedule Trigger → Google Sheets → Check Cart Status → AI Agent → Generate Recovery Email → Gmail
+
+Example
+
+Customer:
+John
+
+Product:
+Bluetooth Speaker
+
+Cart Value:
+₱1,999
+
+AI-Generated Email:
+"Hi John,
+
+We noticed you left the Bluetooth Speaker in your cart for ₱1,999. If you're still interested, you can return to your cart to complete your purchase.
+
+Best regards,
+Customer Support"
+
+Business Value
+Recovers potential lost sales
+Automates customer follow-ups
+Saves time on manual outreach
+Creates personalized customer messages
+Helps businesses improve conversion opportunities
+Tools Used
+n8n
+Google Sheets
+AI/LLM
+Gmail
+Portfolio Description
+
+AI Abandoned Cart Recovery is an AI-powered n8n automation that identifies abandoned shopping carts, generates personalized recovery emails using AI, and automatically sends follow-up messages to customers. The workflow helps eCommerce businesses reduce manual follow-ups and recover potential lost sales.
