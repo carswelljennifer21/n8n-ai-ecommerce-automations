@@ -1,0 +1,252 @@
+{
+  "name": "AI Return Request Classifier",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -176
+      ],
+      "id": "66cf3926-dd0d-4d7a-9463-e17ca5c72b20",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f6fa88ac-7db7-4d5e-85eb-086a2bd14d8e",
+              "name": "return_request",
+              "value": "The headphones I received are damaged and won't turn on. I'd like a refund.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -272,
+        -112
+      ],
+      "id": "cbd56190-1dd3-43b1-92d0-acc140de2047",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an e-commerce return request classifier.\n\nAnalyze the customer's return request below.\n\nClassify it into:\n- return_category\n- priority\n- return_reason\n- recommended_action\n\nCustomer return request:\n{{ $json.return_request }}\n\nReturn the result as valid JSON only.\n\nUse this format:\n{\n  \"return_category\": \"string\",\n  \"priority\": \"string\",\n  \"return_reason\": \"string\",\n  \"recommended_action\": \"string\"\n}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -48,
+        -32
+      ],
+      "id": "3b089fea-72ea-4c59-9dee-96383ec141aa",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        176
+      ],
+      "id": "c820e635-9111-4c39-baa9-a3b270cf8ac3",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IC6IM0vnBn4PHslR",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json.text;\n\nconst result = JSON.parse(output);\n\nreturn [\n  {\n    json: result\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        -128
+      ],
+      "id": "40cc67fd-0b24-4134-8609-5bdb06409f52",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1MbC6CKvYExn_NLfFjnKdA5KuSVm1756GUApJ2ffpDVg",
+          "mode": "list",
+          "cachedResultName": "AI Return Request Classifier",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MbC6CKvYExn_NLfFjnKdA5KuSVm1756GUApJ2ffpDVg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MbC6CKvYExn_NLfFjnKdA5KuSVm1756GUApJ2ffpDVg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "return_request": "={{$node[\"Edit Fields\"].json[\"return_request\"]}}",
+            "return_category": "={{$json.return_category}}",
+            "priority": "={{$json.priority}}",
+            "return_reason": "={{$json.return_reason}}",
+            "recommended_action": "={{$json.recommended_action}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "return_request",
+              "displayName": "return_request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "return_category",
+              "displayName": "return_category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "return_reason",
+              "displayName": "return_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommended_action",
+              "displayName": "recommended_action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        496,
+        0
+      ],
+      "id": "337886d8-b6dd-4035-9652-921701b4b185",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3tVF2RQkxEagCkf7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c4178abe-5559-4c6d-8754-b9b72ec6a2cb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb689872d6e9c98b0be08d4b1136dbe6749ca4eb2357a75e18eafe901d094fff"
+  },
+  "nodeGroups": [],
+  "id": "RYhYTfetAXJBfxxn",
+  "tags": []
+}
