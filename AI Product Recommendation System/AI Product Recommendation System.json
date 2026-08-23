@@ -1,0 +1,324 @@
+{
+  "name": "AI Product Recommendation System",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "2359a454-c4d8-4690-b3e3-57e720042b86",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "30e1fb77-c36a-478d-8d82-2990eace68be",
+              "name": "customer_name",
+              "value": "John",
+              "type": "string"
+            },
+            {
+              "id": "f73360ab-23ab-46cf-a3fc-06abddce1ce5",
+              "name": "customer_interest",
+              "value": "Smart home devices",
+              "type": "string"
+            },
+            {
+              "id": "e7a16d38-bbb5-4e8f-bab6-314eafaa3a9b",
+              "name": "budget",
+              "value": "150",
+              "type": "string"
+            },
+            {
+              "id": "a4f3f4b9-cb1e-4ece-aaa5-11ada9a5dec6",
+              "name": "preferred_features",
+              "value": "Wi-Fi connectivity, mobile app, easy setup",
+              "type": "string"
+            },
+            {
+              "id": "99b3372a-298d-4e2f-ab1e-08420cac70af",
+              "name": "product_1",
+              "value": "Smart Home Security Camera",
+              "type": "string"
+            },
+            {
+              "id": "a4759b54-95b2-43cb-9838-430ab53e4609",
+              "name": "price_1",
+              "value": "99.99",
+              "type": "string"
+            },
+            {
+              "id": "38459ab3-4fb5-4df9-a1b6-a51b3336ad5e",
+              "name": "features_1",
+              "value": "Wi-Fi, night vision, mobile app, motion detection",
+              "type": "string"
+            },
+            {
+              "id": "edb569f2-3a04-4588-8fad-62266d73c857",
+              "name": "product_2",
+              "value": "Smart Water Bottle",
+              "type": "string"
+            },
+            {
+              "id": "0eb19f6f-2aa3-48d0-a5f7-6272cbf5dfe2",
+              "name": "price_2",
+              "value": "49.99",
+              "type": "string"
+            },
+            {
+              "id": "5a10222d-c562-45b8-a6e9-185b3295b21f",
+              "name": "features_2",
+              "value": "Hydration tracking, mobile app, reminders",
+              "type": "string"
+            },
+            {
+              "id": "9e3788e2-7f0f-4bc9-94d9-54a2e263ca4d",
+              "name": "product_3",
+              "value": "Smart LED Light Kit",
+              "type": "string"
+            },
+            {
+              "id": "cace9f26-7df1-4120-be27-d7ba888fcabc",
+              "name": "price_3",
+              "value": "79.99",
+              "type": "string"
+            },
+            {
+              "id": "c9dce622-6d14-49cb-9537-995adb1212e4",
+              "name": "features_3",
+              "value": "Wi-Fi, mobile app, voice control",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        64,
+        32
+      ],
+      "id": "710145e8-8395-43dd-bb35-690231438244",
+      "name": "Customer & Product Data"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an e-commerce product recommendation expert.\n\nAnalyze the customer's preferences and the available products.\n\nCustomer:\nName: {{ $json.customer_name }}\nInterest: {{ $json.customer_interest }}\nBudget: ${{ $json.budget }}\nPreferred Features: {{ $json.preferred_features }}\n\nAvailable Products:\n\nProduct 1:\nName: {{ $json.product_1 }}\nPrice: ${{ $json.price_1 }}\nFeatures: {{ $json.features_1 }}\n\nProduct 2:\nName: {{ $json.product_2 }}\nPrice: ${{ $json.price_2 }}\nFeatures: {{ $json.features_2 }}\n\nProduct 3:\nName: {{ $json.product_3 }}\nPrice: ${{ $json.price_3 }}\nFeatures: {{ $json.features_3 }}\n\nRecommend the best products for this customer.\n\nConsider:\n1. Customer interest.\n2. Customer budget.\n3. Preferred features.\n4. How well each product matches the customer's needs.\n\nProvide:\n- The best recommended product.\n- A second recommended product.\n- Why the best product is a good match.\n- A brief explanation of the second recommendation.\n\nDo not recommend products that exceed the customer's budget.\n\nReturn ONLY valid JSON with exactly these fields:\n\n{\n  \"customer_name\": \"string\",\n  \"top_recommendation\": \"string\",\n  \"second_recommendation\": \"string\",\n  \"recommendation_reason\": \"string\",\n  \"second_recommendation_reason\": \"string\"\n}\n\nAll values must be simple strings.\nDo not use quotation marks inside the string values.\nDo not include Markdown.\nDo not include code fences.\nDo not add any explanation outside the JSON.\nMake sure the JSON object ends with a closing curly brace.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        256,
+        80
+      ],
+      "id": "7ec200e6-1e48-4c78-8d12-e4dae26dff86",
+      "name": "AI Product Recommendation"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        256,
+        272
+      ],
+      "id": "a64d3acd-2aa7-42a3-8f14-903e1ca71dd3",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IC6IM0vnBn4PHslR",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json.text;\n\nlet result;\n\ntry {\n  result = JSON.parse(output);\n} catch (error) {\n  const cleaned = output\n    .replace(/```json/g, \"\")\n    .replace(/```/g, \"\")\n    .trim();\n\n  result = JSON.parse(cleaned);\n}\n\nreturn [\n  {\n    json: result\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "41ce6629-ec16-4fdf-b95e-125f2c94e863",
+      "name": "Parse Recommendation"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1yApdDfoAGmVXnBm8nO-awgWCMP2c0VnoKoTUqKyXp30",
+          "mode": "list",
+          "cachedResultName": "AI Product Recommendation System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yApdDfoAGmVXnBm8nO-awgWCMP2c0VnoKoTUqKyXp30/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yApdDfoAGmVXnBm8nO-awgWCMP2c0VnoKoTUqKyXp30/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "customer_name": "={{$json.customer_name}}",
+            "top_recommendation": "={{$json.top_recommendation}}",
+            "second_recommendation": "={{$json.second_recommendation}}",
+            "recommendation_reason": "={{$json.recommendation_reason}}",
+            "second_recommendation_reason": "={{$json.second_recommendation_reason}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "top_recommendation",
+              "displayName": "top_recommendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "second_recommendation",
+              "displayName": "second_recommendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommendation_reason",
+              "displayName": "recommendation_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "second_recommendation_reason",
+              "displayName": "second_recommendation_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        80
+      ],
+      "id": "a9f49ec9-d890-4759-a08b-6d6742c41a4c",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3tVF2RQkxEagCkf7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Customer & Product Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer & Product Data": {
+      "main": [
+        [
+          {
+            "node": "AI Product Recommendation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Product Recommendation",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Product Recommendation": {
+      "main": [
+        [
+          {
+            "node": "Parse Recommendation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Recommendation": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a3ccb5a3-77f8-4525-9b23-65a2cb77cd20",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb689872d6e9c98b0be08d4b1136dbe6749ca4eb2357a75e18eafe901d094fff"
+  },
+  "nodeGroups": [],
+  "id": "1PfDzzHr9Dooqj7D",
+  "tags": []
+}
