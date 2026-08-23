@@ -1,0 +1,281 @@
+{
+  "name": "AI Review Analyzer",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ce1bd901-588a-4046-b4f3-e7ac71093c7f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the customer review.\n\nReturn:\n- sentiment: Positive, Neutral, Mixed, or Negative\n- rating: the customer's rating\n- key_issues: the main complaints or concerns\n- positive_points: the main things the customer liked\n- suggested_response: a short, professional response\n\nOnly use information provided in the review. Do not invent details, refunds, replacements, discounts, or company policies.\n\nCustomer: {{ $json.Customer }}\nReview: {{ $json.Review }}\nRating: {{ $json.Rating }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "1beb98d2-e311-46ca-b963-fd4c15168643",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        208
+      ],
+      "id": "27814559-c825-4764-8d43-406764aeb47f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YXdEaGxsXlN7xt8K",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1V3vEzvwcv8yxEA4AdibWCLLN0FzaPdLUXr19oQgnK-Q",
+          "mode": "list",
+          "cachedResultName": "Review Analyzer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V3vEzvwcv8yxEA4AdibWCLLN0FzaPdLUXr19oQgnK-Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 697320586,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V3vEzvwcv8yxEA4AdibWCLLN0FzaPdLUXr19oQgnK-Q/edit#gid=697320586"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Customer": "={{ $('Reviews Input').item.json.Customer }}",
+            "Sentiment": "={{ $json.output.sentiment }}",
+            "Rating": "={{ $json.output.rating }}",
+            "Key Issues": "={{ $json.output.key_issues.join(', ') }}",
+            "Positive Points": "={{ $json.output.positive_points.join(', ') }}",
+            "Suggested Response": "={{ $json.output.suggested_response }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Customer",
+              "displayName": "Customer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sentiment",
+              "displayName": "Sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rating",
+              "displayName": "Rating",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Key Issues",
+              "displayName": "Key Issues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Positive Points",
+              "displayName": "Positive Points",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Suggested Response",
+              "displayName": "Suggested Response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        0
+      ],
+      "id": "7a81ca94-117b-45dd-aa99-15e409179c73",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UlihVwdtB03tYQGW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1V3vEzvwcv8yxEA4AdibWCLLN0FzaPdLUXr19oQgnK-Q",
+          "mode": "list",
+          "cachedResultName": "AI Review Analyzer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V3vEzvwcv8yxEA4AdibWCLLN0FzaPdLUXr19oQgnK-Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V3vEzvwcv8yxEA4AdibWCLLN0FzaPdLUXr19oQgnK-Q/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "4ead4110-a013-4f7a-a848-a9a153c91e38",
+      "name": "Reviews Input",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UlihVwdtB03tYQGW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"sentiment\": \"Mixed\",\n  \"rating\": 3,\n  \"key_issues\": \"Slow delivery\",\n  \"positive_points\": \"Great sound quality\",\n  \"suggested_response\": \"Thank you for your feedback...\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        624,
+        208
+      ],
+      "id": "54e96eab-b98f-4be1-ac0d-ee098b9efdf2",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Reviews Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reviews Input": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4dff5194-0364-457c-8dc6-92577051a77a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "deaa0c78608c90b7fdc397c9ae97ab1cbb064e9b10380f3f8c77c51e5e388097"
+  },
+  "nodeGroups": [],
+  "id": "76cDXzXbnEkP9q8X",
+  "tags": []
+}
